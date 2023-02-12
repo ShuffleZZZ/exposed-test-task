@@ -1,6 +1,6 @@
 package com.github.shufflezzz.matcher.automata
 
-class NfaAutomata(
+class NFA(
     private val transitions: Map<State, Set<Transition>>,
     private val initStates: List<State>,
     private val termStates: List<State>,

@@ -1,7 +1,7 @@
 package com.github.shufflezzz.matcher
 
 import com.github.shufflezzz.matcher.automata.AutomataVisitor
-import com.github.shufflezzz.matcher.automata.NfaAutomata
+import com.github.shufflezzz.matcher.automata.NFA
 import com.github.shufflezzz.matcher.grammar.RegexLexer
 import com.github.shufflezzz.matcher.grammar.RegexParser
 import org.antlr.v4.runtime.CharStreams
@@ -35,11 +35,11 @@ fun isMatching(value: String, pattern: Regex): Boolean {
     return matcher.accepts(value)
 }
 
-private fun getMatcher(pattern: Regex): NfaAutomata {
+private fun getMatcher(pattern: Regex): NFA {
     val lexer = RegexLexer(CharStreams.fromString(pattern))
     val tokens = CommonTokenStream(lexer)
     val parser = RegexParser(tokens)
     val visitor = AutomataVisitor()
 
-    return visitor.visit(parser.regex()).toNfaAutomata()
+    return visitor.visit(parser.regex()).toNFA()
 }

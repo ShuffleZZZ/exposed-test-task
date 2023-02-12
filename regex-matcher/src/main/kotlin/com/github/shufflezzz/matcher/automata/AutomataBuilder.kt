@@ -3,22 +3,22 @@ package com.github.shufflezzz.matcher.automata
 import org.antlr.v4.runtime.tree.TerminalNode
 
 class AutomataBuilder {
-    fun or(terms: List<NfaEpsAutomata>): NfaEpsAutomata {
+    fun or(terms: List<EpsNFA>): EpsNFA {
         if (terms.size == 1) return terms.single()
 
-        val automata = NfaEpsAutomata.nextAutomata()
+        val automation = EpsNFA.create()
 
         for (term in terms) {
-            automata.copyTransitions(term)
+            automation.copyTransitions(term)
 
-            automata.addTransition(automata.initState, term.initState, EpsTerm)
-            automata.addTransition(term.termState, automata.termState, EpsTerm)
+            automation.addTransition(automation.initState, term.initState, EpsTerm)
+            automation.addTransition(term.termState, automation.termState, EpsTerm)
         }
 
-        return automata
+        return automation
     }
 
-    fun and(terms: List<NfaEpsAutomata>): NfaEpsAutomata {
+    fun and(terms: List<EpsNFA>): EpsNFA {
         if (terms.size == 1) return terms.single()
 
         return terms.reduce { left, right ->
@@ -31,26 +31,26 @@ class AutomataBuilder {
         }
     }
 
-    fun closure(automata: NfaEpsAutomata, operator: TerminalNode?): NfaEpsAutomata {
-        if (operator == null) return automata
+    fun closure(automation: EpsNFA, operator: TerminalNode?): EpsNFA {
+        if (operator == null) return automation
 
         return when (operator.symbol.text) {
-            "*" -> automata.zeroOrMany()
-            "+" -> automata.oneOrMany()
-            "?" -> automata.zeroOrOne()
+            "*" -> automation.zeroOrMany()
+            "+" -> automation.oneOrMany()
+            "?" -> automation.zeroOrOne()
             else -> error("Unknown operator")
         }
     }
 
-    fun char(char: Char?): NfaEpsAutomata {
-        if (char == null) error("Unsupported character")
+    fun char(char: Char?): EpsNFA {
+        checkNotNull(char) { "Unsupported character" }
 
-        val automata = NfaEpsAutomata.nextAutomata()
+        val automation = EpsNFA.create()
 
         val term = if (char == '.') AnyTerm else CharTerm(char)
-        automata.addTransition(automata.initState, automata.termState, term)
+        automation.addTransition(automation.initState, automation.termState, term)
 
-        return automata
+        return automation
     }
 }
 

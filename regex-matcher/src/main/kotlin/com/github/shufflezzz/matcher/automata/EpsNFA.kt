@@ -1,13 +1,13 @@
 package com.github.shufflezzz.matcher.automata
 
-class NfaEpsAutomata private constructor(name: String) {
+class EpsNFA private constructor(name: String) {
     var initState = name + 0
     var termState = name + 1
 
     private val transitions = mutableMapOf<State, MutableSet<Transition>>()
 
 
-    fun copyTransitions(automata: NfaEpsAutomata) = transitions.putAll(automata.transitions)
+    fun copyTransitions(automation: EpsNFA) = transitions.putAll(automation.transitions)
 
     fun addTransition(from: State, to: State, term: Term) =
         transitions.computeIfAbsent(from) { mutableSetOf() }.add(Transition(to, term))
@@ -20,7 +20,7 @@ class NfaEpsAutomata private constructor(name: String) {
     fun zeroOrMany() = oneOrMany().zeroOrOne()
 
 
-    fun toNfaAutomata(): NfaAutomata {
+    fun toNFA(): NFA {
         val nonEpsTransitions = transitions
         val initStates = mutableListOf(initState)
         val termStates = mutableListOf(termState)
@@ -50,23 +50,23 @@ class NfaEpsAutomata private constructor(name: String) {
 
         assert(nonEpsTransitions.values.all { it.all { t -> t.term !is EpsTerm } })
 
-        return NfaAutomata(nonEpsTransitions, initStates, termStates)
+        return NFA(nonEpsTransitions, initStates, termStates)
     }
 
 
     companion object {
-        private var nextAutomataName = "@"
+        private var nextName = "@"
 
         /**
-         * Generates [NfaEpsAutomata] with unique name.
+         * Generates [EpsNFA] with unique name.
          */
-        fun nextAutomata() = NfaEpsAutomata(nextName())
+        fun create() = EpsNFA(nextName())
 
         private fun nextName(): String {
-            nextAutomataName = if (nextAutomataName.endsWith('Z')) nextAutomataName + 'A'
-            else nextAutomataName.dropLast(1) + nextAutomataName.last().inc()
+            nextName = if (nextName.endsWith('Z')) nextName + 'A'
+            else nextName.dropLast(1) + nextName.last().inc()
 
-            return nextAutomataName
+            return nextName
         }
     }
 }

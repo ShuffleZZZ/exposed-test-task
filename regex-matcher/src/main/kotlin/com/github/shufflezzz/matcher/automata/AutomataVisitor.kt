@@ -5,7 +5,7 @@ import com.github.shufflezzz.matcher.grammar.RegexVisitor
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor
 import org.antlr.v4.runtime.tree.TerminalNode
 
-class AutomataVisitor : AbstractParseTreeVisitor<NfaEpsAutomata>(), RegexVisitor<NfaEpsAutomata> {
+class AutomataVisitor : AbstractParseTreeVisitor<EpsNFA>(), RegexVisitor<EpsNFA> {
 
     private val automataBuilder = AutomataBuilder()
 
@@ -18,7 +18,7 @@ class AutomataVisitor : AbstractParseTreeVisitor<NfaEpsAutomata>(), RegexVisitor
     override fun visitClosure(ctx: RegexParser.ClosureContext) =
         ctx.OPERATOR().fold(visitToken(ctx.token()), automataBuilder::closure)
 
-    override fun visitToken(ctx: RegexParser.TokenContext): NfaEpsAutomata {
+    override fun visitToken(ctx: RegexParser.TokenContext): EpsNFA {
         val nextRule = ctx.children?.find { it !is TerminalNode } ?: error("Unsupported token")
 
         return visit(nextRule)
