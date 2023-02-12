@@ -10,6 +10,6 @@ class TreeDepthService {
         val leftDepth = maxDepth(root.left)
         val rightDepth = maxDepth(root.right)
 
-        return leftDepth.coerceAtLeast(rightDepth) + 1
+        return maxOf(leftDepth, rightDepth) + 1
     }
 }
