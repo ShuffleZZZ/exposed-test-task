@@ -1,0 +1,20 @@
+{
+  "root": {
+    "value": "A",
+    "left": {
+      "value": "B",
+      "left": {
+        "value": "D"
+      },
+      "right": {
+        "value": "E"
+      }
+    },
+    "right": {
+      "value": "C",
+      "right": {
+        "value": "F"
+      }
+    }
+  }
+}
